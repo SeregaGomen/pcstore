@@ -1,0 +1,70 @@
+<?php
+/* @var $this PersonController */
+/* @var $model Person */
+
+$this->breadcrumbs=array(
+	'Справочники'=>array('/site/dict'),
+	'Персоны'=>array('index'),
+	'Обзор',
+);
+
+$this->menu=array(
+	array('label'=>'Список', 'url'=>array('index')),
+	array('label'=>'Создать', 'url'=>array('create')),
+);
+
+Yii::app()->clientScript->registerScript('search', "
+$('.search-button').click(function(){
+	$('.search-form').toggle();
+	return false;
+});
+$('.search-form form').submit(function(){
+	$('#person-grid').yiiGridView('update', {
+		data: $(this).serialize()
+	});
+	return false;
+});
+");
+?>
+
+<h1>Обзор персон</h1>
+
+<p>
+Вы также можете использовать дополнительный оператор сравнения (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
+or <b>=</b>) в начале каждого поискового значения, чтобы задать режим сравнения.
+</p>
+
+<?php echo CHtml::link('Расширенный поиск','#',array('class'=>'search-button')); ?>
+<div class="search-form" style="display:none">
+<?php $this->renderPartial('_search',array(
+	'model'=>$model,
+)); ?>
+</div><!-- search-form -->
+
+<?php $this->widget('zii.widgets.grid.CGridView', array(
+	'id'=>'person-grid',
+	'dataProvider'=>$model->search(),
+	'filter'=>$model,
+	'columns'=>array(
+/*		array(            
+                 'name'=>'id',
+                 'htmlOptions'=>array('width'=>'30px'),
+                 ),*/
+//		'name',
+                array(            
+                 'name'=>'name',
+                 'htmlOptions'=>array('width'=>'200px'),
+                 ),
+		'phone',
+		'email',
+//		'id_department',
+                array(
+                        'name' => 'id_department',
+                        'filter' => CHtml::listData(Department::model()->findAll(), 'id', 'name'),
+                        'value' => '$data->department->name',
+                ),
+		array(
+			'class'=>'CButtonColumn',
+		),
+	),
+)); ?>

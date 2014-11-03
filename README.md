@@ -1,0 +1,4 @@
+sklad
+=====
+
+sklad
